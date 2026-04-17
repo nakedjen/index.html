@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <title>Just Magic Travel Finder</title>
+  <style>
+    :root{
+      --bg:#f7f4ff;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --line:#e9ddff;
+      --accent:#7c3aed;
+      --accent2:#ec4899;
+      --good:#0f766e;
+      --warn:#92400e;
+      --shadow:0 12px 30px rgba(67,31,128,.08);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,#faf7ff 0%,#fff 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    .wrap{max-width:860px;margin:0 auto;padding:14px 14px 48px}
+    .hero{padding:18px;border-radius:28px;background:linear-gradient(135deg,#fff 0%,#f5efff 100%);box-shadow:var(--shadow);border:1px solid var(--line)}
+    h1{margin:0;font-size:32px;line-height:1.05}
+    .sub{margin-top:8px;color:var(--muted);font-size:15px;line-height:1.45}
+    .pillrow,.buttonrow,.tabrow,.quickrow{display:flex;gap:8px;flex-wrap:wrap}
+    .pill,.tiny-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px}
+    .pill{padding:10px 12px;font-size:13px;color:#4b5563}
+    .tiny-pill{padding:6px 10px;font-size:12px;color:#4b5563}
+    .section{margin-top:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card-inner{padding:16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media (min-width:760px){.grid{grid-template-columns:1fr 1fr}}
+    .label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6d28d9;margin-bottom:8px}
+    select,input,button,a.action{
+      min-height:46px;border-radius:14px;border:1px solid #d8c8ff;background:#fff;
+      font:inherit;color:inherit
+    }
+    select,input{width:100%;padding:0 14px}
+    button,a.action{
+      padding:0 14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+      cursor:pointer;transition:transform .08s ease, background .15s ease, border-color .15s ease
+    }
+    button:active,a.action:active{transform:scale(.985)}
+    .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .secondary{background:#fff;color:#5b21b6}
+    .ghost{background:#fff}
+    .hot{background:#fff7fb;color:#9d174d;border-color:#f5c2df}
+    .green{background:#f0fdfa;color:#115e59;border-color:#99f6e4}
+    .warn{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .tabrow button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .muted{color:var(--muted)}
+    .status{font-size:14px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:#faf8ff}
+    .place{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff}
+    .place h3{margin:0 0 6px;font-size:18px;line-height:1.2}
+    .place p{margin:7px 0;font-size:14px;line-height:1.42}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:#f6f0ff;border:1px solid #e9ddff;color:#5b21b6}
+    .category-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .category-title h2{font-size:22px;margin:0}
+    .stack{display:grid;gap:10px}
+    .small{font-size:13px}
+    .footer-note{font-size:12px;color:var(--muted);line-height:1.5}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    .searchBox{display:grid;grid-template-columns:1fr auto;gap:8px}
+    .empty{padding:18px;text-align:center;color:var(--muted)}
+    .sticky-tools{
+      position:sticky;bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:20;margin-top:16px
+    }
+    .toolbar{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);padding:10px;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+    @media (min-width:650px){.toolbar{grid-template-columns:repeat(4,1fr)}}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="pillrow">
+      <span class="pill">✨ phone-first</span>
+      <span class="pill">📍 hotel or GPS</span>
+      <span class="pill">🧃 beets</span>
+      <span class="pill">☕ your coffee</span>
+      <span class="pill">🚽 toilet time</span>
+      <span class="pill">🍪 afternoon snacks</span>
+    </div>
+    <h1>Just Magic</h1>
+    <div class="sub">A sturdier travel companion for <span class="mono">iPhone 16 Pro</span>. No fake live search, no stage fog. It gives you curated picks for each stop, one-tap map launches, copyable local-language phrases, and nearby emergency searches when you are in motion.</div>
+  </div>
+
+  <div class="section grid">
+    <div class="card"><div class="card-inner">
+      <div class="label">Current stop</div>
+      <select id="stopSelect"></select>
+      <div class="buttonrow" style="margin-top:10px">
+        <button class="secondary" id="gpsBtn">Use My Location</button>
+        <button class="ghost" id="hotelBtn">Use Hotel Anchor</button>
+        <button class="hot" id="saveBtn">Save This Stop</button>
+      </div>
+      <div class="divider"></div>
+      <div id="baseCamp" class="status"></div>
+    </div></div>
+
+    <div class="card"><div class="card-inner">
+      <div class="label">Right-now tools</div>
+      <div class="quickrow">
+        <button class="primary" id="coffeeNowBtn">Coffee now</button>
+        <button class="primary" id="beetNowBtn">Beets now</button>
+        <button class="warn" id="toiletNowBtn">Toilet now</button>
+        <button class="green" id="snackNowBtn">Snack now</button>
+      </div>
+      <div class="divider"></div>
+      <div class="label">Search your stops</div>
+      <div class="searchBox">
+        <input id="searchInput" type="text" placeholder="Search city, hotel, beet, snack, toilet, neighborhood…">
+        <button class="ghost" id="clearSearchBtn">Clear</button>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="section card">
+    <div class="card-inner">
+      <div class="tabrow">
+        <button data-tab="current" class="active">Current stop</button>
+        <button data-tab="all">All stops</button>
+        <button data-tab="saved">Saved</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="panel"></div>
+
+  <div class="sticky-tools">
+    <div class="toolbar">
+      <button class="primary" id="copyCoffeeBtn">Copy coffee order</button>
+      <button class="green" id="copyBeetBtn">Copy beet request</button>
+      <button class="ghost" id="mapsHotelBtn">Open hotel in Maps</button>
+      <button class="warn" id="mapsToiletBtn">Fast toilet search</button>
+    </div>
+  </div>
+
+  <div class="section footer-note">
+    Reliable by design: this version uses curated places plus Apple Maps search links instead of pretending it has a live places engine. Your existing page’s “live mode” is still mock-oriented, with placeholder API input and generated results rather than real place fetches. This build avoids that trap.
+  </div>
+</div>
+
+<script>
+const STOPS = [
+  {
+    id:"ams",
+    city:"Amsterdam",
+    label:"Amsterdam • Quentin Canal House",
+    hotelName:"Quentin Canal House",
+    address:"Leidsekade 89, 1017 PN Amsterdam, Netherlands",
+    neighborhood:"Leidsekade / Leidseplein edge",
+    notes:"Canal-side base camp.",
+    lat:52.3637,lng:4.8789, language:"Dutch",
+    coffeeText:"Mag ik alsjeblieft een lichte filterkoffie met vier shots espresso erbovenop, met ruimte voor room?",
+    beetText:"Mag ik alsjeblieft verse bietensap? Koud geperst als dat mogelijk is.",
+    coffee:[
+      {name:"Uncommon Amsterdam", fit:"Specialty coffee", neighborhood:"Canal Belt", note:"Independent, polished, worth the walk.", tags:["independent","specialty"], query:"Uncommon Amsterdam"},
+      {name:"LOT61 Coffee Roasters", fit:"Espresso-forward fallback", neighborhood:"Oud-West", note:"A smart fallback when you need serious coffee people.", tags:["independent","specialty"], query:"LOT61 Coffee Roasters Amsterdam"}
+    ],
+    beet:[
+      {name:"Juice Brothers", fit:"Fresh juice likelihood", neighborhood:"Canal Belt", note:"Good beet odds and a clean menu profile.", tags:["juice","fresh"], query:"Juice Brothers Amsterdam"},
+      {name:"SLA", fit:"Beet-friendly menu", neighborhood:"Amsterdam", note:"Useful for a practical beet mission.", tags:["beets","salads"], query:"SLA Amsterdam"}
+    ],
+    snack:[
+      {name:"Saint-Jean Bakery", fit:"Afternoon delight", neighborhood:"Central Amsterdam", note:"Pastry morale support.", tags:["bakery","pastry"], query:"Saint Jean Bakery Amsterdam"},
+      {name:"De Laatste Kruimel", fit:"Comfort bakery", neighborhood:"Centrum", note:"Cozy sugar spell for late-day nerves.", tags:["bakery"], query:"De Laatste Kruimel Amsterdam"}
+    ],
+    toilet:[
+      {name:"Your hotel", fit:"Most reliable", neighborhood:"Base camp", note:"When in doubt, home base wins.", tags:["hotel","reliable"], query:"Quentin Canal House Amsterdam"},
+      {name:"Museum / cafe fallback", fit:"Order-and-go option", neighborhood:"Leidseplein orbit", note:"Use nearby cafes or museums as civilized backup.", tags:["fallback"], query:"public toilet near Leidseplein Amsterdam"}
+    ]
+  },
+  {
+    id:"ber",
+    city:"Berlin",
+    label:"Berlin • central stop",
+    hotelName:"Berlin base camp",
+    address:"Berlin, Germany",
+    neighborhood:"Central Berlin",
+    notes:"History walk, sauna ease, and a city that likes a clever detour.",
+    lat:52.5200,lng:13.4050, language:"German",
+    coffeeText:"Ich hätte gern einen hellen Filterkaffee mit vier Espressoshots darüber und etwas Platz für Sahne, bitte.",
+    beetText:"Ich hätte gern frischen Rote-Bete-Saft, am besten kaltgepresst, bitte.",
+    coffee:[
+      {name:"The Barn", fit:"Excellent coffee", neighborhood:"Berlin", note:"The serious-cup option.", tags:["specialty","independent"], query:"The Barn Berlin"},
+      {name:"Five Elephant", fit:"Strong fallback", neighborhood:"Berlin", note:"Excellent coffee plus cake diplomacy.", tags:["specialty","cake"], query:"Five Elephant Berlin"}
+    ],
+    beet:[
+      {name:"Daluma", fit:"Juice-heavy menu", neighborhood:"Mitte", note:"A good beet-leaning bet.", tags:["juice","health"], query:"Daluma Berlin"},
+      {name:"Superfoods & Organic Liquids", fit:"Fresh juice likelihood", neighborhood:"Berlin", note:"Name alone suggests it came dressed as a beet.", tags:["juice"], query:"Superfoods & Organic Liquids Berlin"}
+    ],
+    snack:[
+      {name:"Mauerpark market treats", fit:"Sunday snack magic", neighborhood:"Prenzlauer Berg", note:"For pastry, nibbles, and market drift.", tags:["market","snacks"], query:"Mauerpark Berlin food market"},
+      {name:"Five Elephant", fit:"Cake rescue", neighborhood:"Berlin", note:"Because a city can hand you both espresso and cake.", tags:["cake","coffee"], query:"Five Elephant Berlin"}
+    ],
+    toilet:[
+      {name:"Your hotel", fit:"Most reliable", neighborhood:"Base camp", note:"Best first move when practical.", tags:["hotel","reliable"], query:"hotel Berlin"},
+      {name:"DB station / cafe fallback", fit:"Fast option", neighborhood:"Transit zones", note:"Stations and larger cafes can save the day.", tags:["fallback","transit"], query:"public toilet near me Berlin"}
+    ]
+  },
+  {
+    id:"prg",
+    city:"Prague",
+    label:"Prague • Brunetti Design Apartment",
+    hotelName:"Brunetti Design Apartment",
+    address:"Prague, Czechia",
+    neighborhood:"Prague center",
+    notes:"Baroque, beer bath, and a need for sensible morning medicine.",
+    lat:50.0755,lng:14.4378, language:"Czech",
+    coffeeText:"Prosím, lehkou filtrovanou kávu se čtyřmi espressy navrch a místo na smetanu.",
+    beetText:"Prosím, čerstvou řepnou šťávu, nejlépe lisovanou za studena.",
+    coffee:[
+      {name:"EMA espresso bar", fit:"Excellent coffee", neighborhood:"Prague", note:"Reliable coffee people.", tags:["specialty"], query:"EMA espresso bar Prague"},
+      {name:"Můj šálek kávy", fit:"Favorite-level backup", neighborhood:"Prague", note:"A proper contender.", tags:["specialty"], query:"Muj salek kavy Prague"}
+    ],
+    beet:[
+      {name:"My Raw Café", fit:"Fresh juice likelihood", neighborhood:"Prague", note:"Raw menu means decent beet odds.", tags:["raw","juice"], query:"My Raw Cafe Prague"},
+      {name:"Country Life", fit:"Juice / health fallback", neighborhood:"Prague", note:"Practical and useful.", tags:["health"], query:"Country Life Prague juice"}
+    ],
+    snack:[
+      {name:"Cukrář Skála", fit:"Afternoon delight", neighborhood:"Prague", note:"A pastry curtain call.", tags:["pastry"], query:"Cukrar Skala Prague"},
+      {name:"Eska", fit:"Bread and pastry rescue", neighborhood:"Prague", note:"Stylish carbs for morale.", tags:["bakery"], query:"Eska Prague bakery"}
+    ],
+    toilet:[
+      {name:"Your apartment", fit:"Most reliable", neighborhood:"Base camp", note:"The throne you know.", tags:["hotel","reliable"], query:"Brunetti Design Apartment Prague"},
+      {name:"Cafe / mall fallback", fit:"Fast option", neighborhood:"Central Prague", note:"A tactical pastry purchase can open many doors.", tags:["fallback"], query:"public toilet Prague center"}
+    ]
+  },
+  {
+    id:"rak",
+    city:"Marrakech",
+    label:"Marrakech • Riad Albaraka",
+    hotelName:"Riad Albaraka",
+    address:"Derb Dabachi Derb Jamaa N 6, Medina, Marrakech 40000, Morocco",
+    neighborhood:"Medina",
+    notes:"The medina can turn into a velvet maze. Use home base wisely.",
+    lat:31.6258,lng:-7.9892, language:"French / Arabic",
+    coffeeText:"Je voudrais un café filtre léger avec quatre shots d'espresso par-dessus, et de la place pour de la crème, s'il vous plaît.",
+    beetText:"Je voudrais un jus de betterave frais, de préférence pressé à froid, s'il vous plaît.",
+    coffee:[
+      {name:"Bacha Coffee", fit:"Beautiful coffee stop", neighborhood:"Marrakech", note:"Glamorous and useful.", tags:["coffee"], query:"Bacha Coffee Marrakech"},
+      {name:"30JEM Coffee", fit:"Independent coffee", neighborhood:"Medina", note:"A more local-feeling coffee move.", tags:["independent"], query:"30JEM Coffee Marrakech"}
+    ],
+    beet:[
+      {name:"Juice stalls near Jemaa el-Fnaa", fit:"Fresh juice likelihood", neighborhood:"Jemaa el-Fnaa orbit", note:"Ask specifically for beet. Fresh can beat precious.", tags:["juice","fresh"], query:"fresh beet juice Marrakech"},
+      {name:"Healthy cafe fallback", fit:"Menu chance", neighborhood:"Marrakech", note:"Useful when the square is chaos confetti.", tags:["juice"], query:"healthy juice cafe Marrakech"}
+    ],
+    snack:[
+      {name:"Medina pastry stop", fit:"Afternoon rescue", neighborhood:"Medina", note:"Choose charm and sugar before the wobble begins.", tags:["pastry"], query:"pastry Marrakech medina"},
+      {name:"Riad tea return", fit:"Gentle reset", neighborhood:"Base camp", note:"Sometimes the right move is tea at home base.", tags:["tea","hotel"], query:"Riad Albaraka Marrakech"}
+    ],
+    toilet:[
+      {name:"Riad Albaraka", fit:"Most reliable", neighborhood:"Medina", note:"In the medina, home base is not a suggestion. It is a strategy.", tags:["hotel","reliable"], query:"Riad Albaraka Marrakech"},
+      {name:"Restaurant toilet fallback", fit:"Order-and-go option", neighborhood:"Jemaa el-Fnaa orbit", note:"Move before things get theatrical.", tags:["fallback"], query:"public toilet near Jemaa el-Fnaa Marrakech"}
+    ]
+  },
+  {
+    id:"lis",
+    city:"Lisbon",
+    label:"Lisbon • layover stop",
+    hotelName:"Lisbon layover",
+    address:"Lisbon, Portugal",
+    neighborhood:"Baixa / Bica orbit",
+    notes:"Short window. Thick-straw strategy.",
+    lat:38.7223,lng:-9.1393, language:"Portuguese",
+    coffeeText:"Queria, por favor, um café filtrado claro com quatro doses de espresso por cima e espaço para natas.",
+    beetText:"Queria, por favor, sumo de beterraba fresco, de preferência prensado a frio.",
+    coffee:[
+      {name:"Hello, Kristof", fit:"Best-bet coffee", neighborhood:"Bica", note:"Already on your radar for good reason.", tags:["specialty","independent"], query:"Hello Kristof Lisbon"},
+      {name:"The Folks", fit:"Great backup", neighborhood:"Lisbon", note:"Solid specialty fallback.", tags:["specialty"], query:"The Folks Lisbon coffee"}
+    ],
+    beet:[
+      {name:"Juicy Lisboa", fit:"Juice-heavy option", neighborhood:"Lisbon", note:"A sensible beet bet.", tags:["juice"], query:"Juicy Lisboa"},
+      {name:"Honest Greens", fit:"Beet fallback", neighborhood:"Lisbon", note:"Not romance, just practical medicine.", tags:["health","juice"], query:"Honest Greens Lisbon"}
+    ],
+    snack:[
+      {name:"Pastel de nata stop", fit:"Afternoon delight", neighborhood:"Lisbon", note:"This city hands out pastry with both hands.", tags:["pastry"], query:"best pastel de nata near Bica Lisbon"},
+      {name:"Hello, Kristof", fit:"Coffee plus nibble", neighborhood:"Bica", note:"Sometimes your coffee place can double as your rescue raft.", tags:["coffee","snack"], query:"Hello Kristof Lisbon"}
+    ],
+    toilet:[
+      {name:"Your hotel", fit:"Most reliable", neighborhood:"Base camp", note:"The sensible move if time allows.", tags:["hotel","reliable"], query:"hotel Lisbon"},
+      {name:"Mall / station fallback", fit:"Fast option", neighborhood:"Central Lisbon", note:"Useful when the city is sprinting.", tags:["fallback"], query:"public toilet Lisbon center"}
+    ]
+  }
+];
+
+const state = {
+  selectedId: localStorage.getItem("jm-selected") || STOPS[0].id,
+  saved: JSON.parse(localStorage.getItem("jm-saved") || "[]"),
+  query: "",
+  tab: "current",
+  useCurrentLocation: false,
+  gps: null
+};
+
+const $ = (id) => document.getElementById(id);
+const panel = $("panel");
+
+function saveState(){
+  localStorage.setItem("jm-selected", state.selectedId);
+  localStorage.setItem("jm-saved", JSON.stringify(state.saved));
+}
+function selectedStop(){ return STOPS.find(s => s.id === state.selectedId) || STOPS[0]; }
+function norm(s){ return (s || "").toLowerCase().trim(); }
+
+function haystack(stop){
+  const bits = [stop.city, stop.label, stop.hotelName, stop.address, stop.neighborhood, stop.notes, stop.coffeeText, stop.beetText];
+  ["coffee","beet","snack","toilet"].forEach(k => stop[k].forEach(p => bits.push(p.name,p.fit,p.neighborhood,p.note,(p.tags||[]).join(" "))));
+  return norm(bits.join(" "));
+}
+function filteredStops(source){
+  const q = norm(state.query);
+  let base = source || STOPS;
+  if(q) base = base.filter(s => haystack(s).includes(q));
+  return base;
+}
+function appleMapsSearch(query, stop){
+  const s = stop || selectedStop();
+  const encoded = encodeURIComponent(query);
+  const ll = `${s.lat},${s.lng}`;
+  return `https://maps.apple.com/?q=${encoded}&ll=${ll}`;
+}
+function googleMapsSearch(query, stop){
+  const s = stop || selectedStop();
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=&center=${s.lat},${s.lng}`;
+}
+function placeLink(place, stop){ return appleMapsSearch(place.query || place.name, stop); }
+
+function copyText(text, label){
+  navigator.clipboard.writeText(text).then(() => {
+    flash(`${label} copied`);
+  }).catch(() => {
+    flash(`Could not copy automatically. Long-press the text instead.`);
+  });
+}
+function flash(msg){
+  const box = document.createElement("div");
+  box.className = "status";
+  box.style.position = "fixed";
+  box.style.left = "12px";
+  box.style.right = "12px";
+  box.style.bottom = "calc(env(safe-area-inset-bottom) + 84px)";
+  box.style.zIndex = 99;
+  box.style.background = "#fff";
+  box.style.borderColor = "#c4b5fd";
+  box.textContent = msg;
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 1800);
+}
+function toggleSaved(id){
+  if(state.saved.includes(id)) state.saved = state.saved.filter(x => x !== id);
+  else state.saved.push(id);
+  saveState();
+  render();
+}
+
+function renderStopSelect(){
+  $("stopSelect").innerHTML = STOPS.map(s => `<option value="${s.id}" ${s.id===state.selectedId?"selected":""}>${s.label}</option>`).join("");
+}
+function renderBaseCamp(){
+  const s = selectedStop();
+  let mode = state.useCurrentLocation && state.gps ? `📍 Using your current GPS near ${state.gps.lat.toFixed(4)}, ${state.gps.lng.toFixed(4)}` : `🏨 Anchored to ${s.hotelName}`;
+  $("baseCamp").innerHTML = `<strong>${s.city}</strong><br>${s.address}<br><span class="muted">${s.neighborhood}. ${s.notes}</span><div style="margin-top:8px">${mode}</div>`;
+}
+function placeCard(place, stop, emoji){
+  return `
+    <div class="place">
+      <div class="category-title">
+        <h3>${emoji} ${place.name}</h3>
+        <span class="tiny-pill">${place.fit}</span>
+      </div>
+      <p><strong>${place.neighborhood}</strong></p>
+      <p>${place.note}</p>
+      <div class="chips">${(place.tags||[]).map(t=>`<span class="chip">${t}</span>`).join("")}</div>
+      <div class="buttonrow" style="margin-top:10px">
+        <a class="action primary" href="${placeLink(place, stop)}" target="_blank" rel="noopener">Open in Apple Maps</a>
+        <a class="action secondary" href="${googleMapsSearch(place.query || place.name, stop)}" target="_blank" rel="noopener">Google Maps</a>
+      </div>
+    </div>
+  `;
+}
+function categorySection(title, items, stop, emoji){
+  return `
+    <div class="card">
+      <div class="card-inner">
+        <div class="category-title">
+          <h2>${emoji} ${title}</h2>
+          <button class="ghost small" data-nearby="${title.toLowerCase()}" data-stop="${stop.id}">Search nearby now</button>
+        </div>
+        <div class="stack">${items.map(p => placeCard(p, stop, emoji)).join("")}</div>
+      </div>
+    </div>
+  `;
+}
+function orderMagic(stop){
+  return `
+    <div class="card">
+      <div class="card-inner">
+        <div class="category-title"><h2>✨ Order Magic</h2><span class="tiny-pill">${stop.language}</span></div>
+        <div class="label">Coffee</div>
+        <div class="status">${stop.coffeeText}</div>
+        <div class="buttonrow" style="margin-top:8px"><button class="primary" data-copy="coffee" data-stop="${stop.id}">Copy coffee order</button></div>
+        <div class="divider"></div>
+        <div class="label">Beet juice</div>
+        <div class="status">${stop.beetText}</div>
+        <div class="buttonrow" style="margin-top:8px"><button class="green" data-copy="beet" data-stop="${stop.id}">Copy beet request</button></div>
+      </div>
+    </div>
+  `;
+}
+function stopCard(stop){
+  return `
+    <div class="card">
+      <div class="card-inner">
+        <div class="category-title">
+          <h2>${stop.city}</h2>
+          <div class="buttonrow">
+            <button class="secondary small" data-use-stop="${stop.id}">Use this stop</button>
+            <button class="hot small" data-save-stop="${stop.id}">${state.saved.includes(stop.id) ? "Unsave" : "Save"}</button>
+          </div>
+        </div>
+        <div class="status"><strong>${stop.hotelName}</strong><br>${stop.address}<br><span class="muted">${stop.neighborhood}. ${stop.notes}</span></div>
+        <div class="divider"></div>
+        <div class="grid">
+          <div>${categorySection("Coffee picks", stop.coffee, stop, "☕")}</div>
+          <div>${categorySection("Beet picks", stop.beet, stop, "🧃")}</div>
+          <div>${categorySection("Afternoon Delight", stop.snack, stop, "🍪")}</div>
+          <div>${categorySection("Toilet Time", stop.toilet, stop, "🚽")}</div>
+        </div>
+        <div class="divider"></div>
+        ${orderMagic(stop)}
+      </div>
+    </div>
+  `;
+}
+function currentView(){
+  const stop = selectedStop();
+  return stopCard(stop);
+}
+function allView(){
+  const stops = filteredStops();
+  if(!stops.length) return `<div class="card"><div class="card-inner empty">No stop matches that search. Try city, hotel, beet, snack, or toilet.</div></div>`;
+  return `<div class="stack">${stops.map(stopCard).join("")}</div>`;
+}
+function savedView(){
+  const stops = filteredStops(STOPS.filter(s => state.saved.includes(s.id)));
+  if(!stops.length) return `<div class="card"><div class="card-inner empty">No saved stops yet. Save the ones you want close to your fingertips.</div></div>`;
+  return `<div class="stack">${stops.map(stopCard).join("")}</div>`;
+}
+function renderPanel(){
+  panel.innerHTML = state.tab === "current" ? currentView() : state.tab === "saved" ? savedView() : allView();
+  wireDynamic();
+}
+function renderTabs(){
+  document.querySelectorAll("[data-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === state.tab));
+}
+function render(){
+  renderStopSelect();
+  renderBaseCamp();
+  renderTabs();
+  renderPanel();
+}
+function wireDynamic(){
+  document.querySelectorAll("[data-copy]").forEach(btn => {
+    btn.onclick = () => {
+      const stop = STOPS.find(s => s.id === btn.dataset.stop);
+      copyText(btn.dataset.copy === "coffee" ? stop.coffeeText : stop.beetText, btn.dataset.copy === "coffee" ? "Coffee order" : "Beet request");
+    };
+  });
+  document.querySelectorAll("[data-use-stop]").forEach(btn => {
+    btn.onclick = () => {
+      state.selectedId = btn.dataset.useStop;
+      state.tab = "current";
+      state.useCurrentLocation = false;
+      saveState(); render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
+  });
+  document.querySelectorAll("[data-save-stop]").forEach(btn => btn.onclick = () => toggleSaved(btn.dataset.saveStop));
+  document.querySelectorAll("[data-nearby]").forEach(btn => {
+    btn.onclick = () => {
+      const stop = STOPS.find(s => s.id === btn.dataset.stop);
+      const type = btn.dataset.nearby;
+      let query = "coffee near me";
+      if(type.includes("beet")) query = "fresh beet juice near me";
+      if(type.includes("afternoon")) query = "bakery pastry tea snacks near me";
+      if(type.includes("toilet")) query = "public toilet restroom near me";
+      window.open(appleMapsSearch(query, stop), "_blank", "noopener");
+    };
+  });
+}
+function useGPS(){
+  if(!navigator.geolocation){
+    flash("Geolocation is unavailable in this browser.");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.useCurrentLocation = true;
+    state.gps = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+    flash("Using your current location");
+    renderBaseCamp();
+  }, () => {
+    flash("Location permission was denied or unavailable.");
+  }, { enableHighAccuracy:true, timeout:8000, maximumAge:300000 });
+}
+
+$("stopSelect").addEventListener("change", e => {
+  state.selectedId = e.target.value;
+  state.useCurrentLocation = false;
+  saveState();
+  render();
+});
+$("gpsBtn").addEventListener("click", useGPS);
+$("hotelBtn").addEventListener("click", () => {
+  state.useCurrentLocation = false;
+  state.gps = null;
+  renderBaseCamp();
+  flash("Using hotel anchor");
+});
+$("saveBtn").addEventListener("click", () => toggleSaved(selectedStop().id));
+$("searchInput").addEventListener("input", e => { state.query = e.target.value; renderPanel(); });
+$("clearSearchBtn").addEventListener("click", () => { $("searchInput").value = ""; state.query = ""; renderPanel(); });
+document.querySelectorAll("[data-tab]").forEach(btn => btn.addEventListener("click", () => { state.tab = btn.dataset.tab; render(); }));
+
+$("coffeeNowBtn").addEventListener("click", () => window.open(appleMapsSearch("specialty coffee near me", selectedStop()), "_blank", "noopener"));
+$("beetNowBtn").addEventListener("click", () => window.open(appleMapsSearch("fresh beet juice near me", selectedStop()), "_blank", "noopener"));
+$("toiletNowBtn").addEventListener("click", () => window.open(appleMapsSearch("public toilet restroom near me", selectedStop()), "_blank", "noopener"));
+$("snackNowBtn").addEventListener("click", () => window.open(appleMapsSearch("bakery pastry tea snacks near me", selectedStop()), "_blank", "noopener"));
+
+$("copyCoffeeBtn").addEventListener("click", () => copyText(selectedStop().coffeeText, "Coffee order"));
+$("copyBeetBtn").addEventListener("click", () => copyText(selectedStop().beetText, "Beet request"));
+$("mapsHotelBtn").addEventListener("click", () => window.open(appleMapsSearch(selectedStop().hotelName + " " + selectedStop().city, selectedStop()), "_blank", "noopener"));
+$("mapsToiletBtn").addEventListener("click", () => window.open(appleMapsSearch("public toilet restroom near me", selectedStop()), "_blank", "noopener"));
+
+render();
+</script>
+</body>
+</html>
